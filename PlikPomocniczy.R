@@ -1,26 +1,27 @@
 load("F:/Norbert/studia/KoloNaukoweDS/Projekty/Analiza sentymentu/dane.rda", )
 dane <- dane[-1,]
 colnames(dane) <- c("nick","date","comment","i")
+dane[,3] <- stri_trans_tolower(dane[,3])
 dane <- dane[sample(1:nrow(dane),10000,replace = FALSE),]
 dane <- dane[order(dane$i),]
 affin <- read.csv2("F:/Norbert/studia/KoloNaukoweDS/Projekty/Analiza sentymentu/sentiment-analysis-2/AFINN - slownik/AFINN-111.txt",
                    sep="\t")
 
-postacie <- c("Cersei",
-             "Tyrion",
-             "Daenerys",
-             "Arya",
-             "Jon",
-             "Sansa",
-             "Jaime",
-             "Tywin",
-             "Joffrey",
-             "Robb",
-             "Ned",
-             "Stannis",
-             "Margaery")
+postacie <- c("cersei",
+             "tyrion",
+             "daenerys",
+             "arya",
+             "jon", # tu trzeba regexa żeby wylapac tylko imie a nie czesc innych slow
+             "sansa",
+             "jaime",
+             "tywin",
+             "joffrey",
+             "robb",
+             "ned",     # tu trzeba regexa
+             "stannis",
+             "margaery")
 
-rody <- c("stark","Lannister","Targaryen")
+rody <- c("stark","lannister","targaryen")
 
 library(stringi)
 library("RSQLite")
@@ -43,11 +44,52 @@ sentyment <- function(teksty,slownik){
 }
 #sentyment(dane[1:100,3],s)
 
+print(Sys.time())
+sentyment_komentarzy <- sentyment(dane[,3],affin)
+dane$sentyment <- sentyment_komentarzy
+print(Sys.time())
+dane$daenerys <- stri_detect_fixed(dane[,3],"daenerys")
+dane$tyrion <- stri_detect_fixed(dane[,3],"tyrion")
+dane$arya <- stri_detect_fixed(dane[,3],"arya")
+dane$cersei <- stri_detect_fixed(dane[,3],"cersei")
+dane$joffrey <- stri_detect_fixed(dane[,3],"joffrey")
 
-#sentyment_komentarzy <- sentyment(dane[,3],affin)
-# 
-# 
-# library(ggplot2)
+
+ library(ggplot2)
+
+ggplot(dane[dane[,"daenerys"],][-1264,],aes(x=as.Date(date),y=sentyment)) + 
+  geom_point() +
+  geom_smooth() +
+  scale_x_date()
+
+ggplot(dane,aes(x=as.Date(date),y=sentyment)) + 
+  ylim(c(-200,300)) +
+  geom_point() +
+  geom_smooth() +
+  scale_x_date() +
+  geom_smooth(aes(x=as.Date(date[dane[,"tyrion"]]),y=sentyment[dane[,"tyrion"]]))
+
+ggplot(dane[dane[,"tyrion"],][-1264,],aes(x=as.Date(date),y=sentyment)) + 
+  geom_point() +
+  geom_smooth() +
+  scale_x_date()
+
+ggplot(dane[dane[,"arya"],][-1264,],aes(x=as.Date(date),y=sentyment)) + 
+  geom_point() +
+  geom_smooth() +
+  scale_x_date()
+
+ggplot(dane[dane[,"cersei"],][-1264,],aes(x=as.Date(date),y=sentyment)) + 
+  geom_point() +
+  geom_smooth() +
+  scale_x_date()
+
+ggplot(dane[dane[,"joffrey"],][-1264,],aes(x=as.Date(date),y=sentyment)) + 
+  geom_point() +
+  geom_smooth() +
+  scale_x_date()
+
+
 # 
 # ggplot()
 # plot(
