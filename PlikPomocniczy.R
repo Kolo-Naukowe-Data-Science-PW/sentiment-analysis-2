@@ -57,37 +57,42 @@ dane$joffrey <- stri_detect_fixed(dane[,3],"joffrey")
 
  library(ggplot2)
 
-ggplot(dane[dane[,"daenerys"],][-1264,],aes(x=as.Date(date),y=sentyment)) + 
-  geom_point() +
-  geom_smooth() +
-  scale_x_date()
-
 ggplot(dane,aes(x=as.Date(date),y=sentyment)) + 
   ylim(c(-200,300)) +
   geom_point() +
   geom_smooth() +
+  scale_x_date() 
+
+ggplot(dane[dane[,"daenerys"],][-1264,],aes(x=as.Date(date),y=sentyment)) + 
+  geom_point() +
+  geom_smooth() +
   scale_x_date() +
-  geom_smooth(aes(x=as.Date(date[dane[,"tyrion"]]),y=sentyment[dane[,"tyrion"]]))
+  labs(title = "Daenerys")
+
 
 ggplot(dane[dane[,"tyrion"],][-1264,],aes(x=as.Date(date),y=sentyment)) + 
   geom_point() +
   geom_smooth() +
-  scale_x_date()
+  scale_x_date() +
+  labs(title = "Tyrion")
 
 ggplot(dane[dane[,"arya"],][-1264,],aes(x=as.Date(date),y=sentyment)) + 
   geom_point() +
   geom_smooth() +
-  scale_x_date()
+  scale_x_date() +
+  labs(title = "Arya")
 
 ggplot(dane[dane[,"cersei"],][-1264,],aes(x=as.Date(date),y=sentyment)) + 
   geom_point() +
   geom_smooth() +
-  scale_x_date()
+  scale_x_date() +
+  labs(title = "Cersei")
 
 ggplot(dane[dane[,"joffrey"],][-1264,],aes(x=as.Date(date),y=sentyment)) + 
   geom_point() +
   geom_smooth() +
-  scale_x_date()
+  scale_x_date() +
+  labs(title = "Joffrey")
 
 
 # 
